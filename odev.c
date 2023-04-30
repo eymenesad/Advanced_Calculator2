@@ -29,7 +29,6 @@ Token arrToken[256+1];
 
 // Lookup arrays are for memorization of variables. Lookup array records the input as string and lookup_2 records integer value of that string.
 char lookup[257][257];
-//long long lookup_2[257];
 
 // a is the index of arrToken
 int a=0;
@@ -41,6 +40,8 @@ int b=0;
 int bigCheck=0;
 
 int naming = 1;
+int number_of_lines_errors=0;
+int most_general_error_flag=0;
 // indicates the precedence of operators
 int precedence(char operator)
 {
@@ -393,27 +394,22 @@ char* evaluatePostfix(FILE *fp)
             char op_val[257];
             strcpy(op_val, arrToken[i].value);
             Token tok1 = tstack[--toptstack];
-            /*long long val1=0;
-            if (tok1.type == TOKEN_TYPE_NUMBER){
-                
-                sscanf(tok1.value,"%lld",&val1);
-            }*/
-
+            
             char outcome[257]="";
             if(strcmp(op_val,"~")==0){
-                // ŞURAYA NOT gelecek
-                //outcome = ~val1;
+                // NOT
+                fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = xor i32 ");
+                    if(tok1.type == TOKEN_TYPE_VARIABLE){
+                        fprintf(fp,"%%");
+                    }
+                    fprintf(fp,tok1.value);
+                    fprintf(fp,",");
+                    fprintf(fp,"%d",-1);
+                    fprintf(fp,"\n");
             }else{
                 Token tok2 = tstack[--toptstack];
-                /*long long val2=0;
-                if (tok2.type == TOKEN_TYPE_NUMBER){
-                    sscanf(tok2.value,"%lld",&val2);
-                }*/
-                //strcat(outcome,tok1.value);
-                //strcat(outcome,"zort");
-                //strcat(outcome,tok2.value);              
-                
-                
                 
                 if(strcmp(op_val,"+")==0){
                     fprintf(fp,"%%");
@@ -430,7 +426,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val1+val2;
                 }else if(strcmp(op_val,"-")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -446,7 +441,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val2-val1;
                 }else if(strcmp(op_val,"*")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -462,7 +456,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val1*val2;
                 }else if(strcmp(op_val,"/")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -478,7 +471,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val1/val2;
                 }else if(strcmp(op_val,"%")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -494,7 +486,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val1%val2;
                 }else if(strcmp(op_val,"&")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -510,7 +501,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val1&val2;
                 }else if(strcmp(op_val,"|")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -525,7 +515,6 @@ char* evaluatePostfix(FILE *fp)
                     }
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
-                    //outcome = val1|val2;
                 }else if(strcmp(op_val,"^")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -541,7 +530,6 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val1^val2;
                 }else if(strcmp(op_val,">>")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -556,7 +544,6 @@ char* evaluatePostfix(FILE *fp)
                     }
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
-                    //outcome = val2>>val1;
                 }else if(strcmp(op_val,"<<")==0){
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming);
@@ -572,39 +559,158 @@ char* evaluatePostfix(FILE *fp)
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = val2<<val1;
                 }else if(strcmp(op_val,"lr")==0){
-                    fprintf(fp,"%%");
-                    fprintf(fp,"%d",naming);
-                    fprintf(fp," = add i32 ");
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming);
+                    fprintf(fp, " = srem i32 ");
+                    if (tok1.type == TOKEN_TYPE_VARIABLE) {
+                        fprintf(fp, "%%");
+                    }
+                    fprintf(fp, "%s", tok1.value);
+                    fprintf(fp,", 32");
+                    fprintf(fp, "\n");
+                    naming++;
+
+                    // Compute the shifted value
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming);
+                    fprintf(fp," = shl i32 ");
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
                     fprintf(fp,tok2.value);
                     fprintf(fp,",");
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming-1);
+                    
+                    fprintf(fp,"\n");
+                    naming++;
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = sub i32 32, ");
+                    
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = (val2 << val1%64) | (val2 >> (64-val1)%64);
+                    naming++;
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = srem i32 ");
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming-1);
+                    fprintf(fp,",");
+                    
+                    fprintf(fp," 32");
+                    fprintf(fp,"\n");
+                    naming++;
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = ashr i32 ");
+                    if(tok2.type == TOKEN_TYPE_VARIABLE){
+                        fprintf(fp,"%%");
+                    }
+                    fprintf(fp,tok2.value);
+                    fprintf(fp,", ");
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming-1);
+                    fprintf(fp,"\n");
+
+                    naming++;
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = or i32 ");
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming-1);
+                    fprintf(fp,", ");
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming-4);
+                    
+                    fprintf(fp,"\n");
+
+                    //outcome = (val2 << val1%32) | (val2 >> (32-val1)%32);
                 }else if(strcmp(op_val,"rr")==0){
-                    fprintf(fp,"%%");
-                    fprintf(fp,"%d",naming);
-                    fprintf(fp," = add i32 ");
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming);
+                    fprintf(fp, " = srem i32 ");
+                    if (tok1.type == TOKEN_TYPE_VARIABLE) {
+                        fprintf(fp, "%%");
+                    }
+                    fprintf(fp, "%s", tok1.value);
+                    fprintf(fp,", 32");
+                    fprintf(fp, "\n");
+                    naming++;
+
+                    // Compute the shifted value
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming);
+                    fprintf(fp," = ashr i32 ");
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
                     fprintf(fp,tok2.value);
                     fprintf(fp,",");
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming-1);
+                    
+                    fprintf(fp,"\n");
+                    naming++;
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = sub i32 32, ");
+                    
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
                     fprintf(fp,tok1.value);
                     fprintf(fp,"\n");
 
-                    //outcome = (val2 >> val1%64) | (val2 << (64-val1)%64);
+                    naming++;
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = srem i32 ");
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming-1);
+                    fprintf(fp,",");
+                    
+                    fprintf(fp," 32");
+                    fprintf(fp,"\n");
+                    naming++;
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = shl i32 ");
+                    if(tok2.type == TOKEN_TYPE_VARIABLE){
+                        fprintf(fp,"%%");
+                    }
+                    fprintf(fp,tok2.value);
+                    fprintf(fp,", ");
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming-1);
+                    fprintf(fp,"\n");
+
+                    naming++;
+
+                    fprintf(fp,"%%");
+                    fprintf(fp,"%d",naming);
+                    fprintf(fp," = or i32 ");
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming-1);
+                    fprintf(fp,", ");
+                    fprintf(fp, "%%");
+                    fprintf(fp, "%d", naming-4);
+                    
+                    fprintf(fp,"\n");
+
+                    //outcome = (val2 >> val1%32) | (val2 << (32-val1)%32);
                 }
             }
             
@@ -632,11 +738,13 @@ char* evaluatePostfix(FILE *fp)
                 }
             }
             if(flagifInsideLookUp==0){
-                printf("Error!\n");
+                printf("Error on line ");
+                printf("%d",number_of_lines_errors);
+                printf("!\n");
+                most_general_error_flag = 1;
             }
             fprintf(fp,"%%");
             fprintf(fp,"%d",naming);
-            //fprintf(fp,arrToken[i].value);
             fprintf(fp," = load i32, i32* ");
             fprintf(fp,"%%");
             fprintf(fp,arrToken[i].value);
@@ -645,8 +753,7 @@ char* evaluatePostfix(FILE *fp)
             tstack[toptstack].type = TOKEN_TYPE_VARIABLE;
             
             sprintf(tstack[toptstack].value,"%d",naming);
-            //strcat(tstack[toptstack].value, arrToken[i].value);
-            //sprintf(tstack[toptstack].value,"%lld",val_var);
+            
             naming++;
             toptstack++;
         }
@@ -655,7 +762,6 @@ char* evaluatePostfix(FILE *fp)
     
     
     strcat(res, tstack[toptstack-1].value);
-    //sscanf(tstack[toptstack-1].value,"%lld",&res);
     return res;
 }
 int main()
@@ -679,18 +785,18 @@ int main()
     //initializing the lookup arrays
     for(int k=0;k<257;k++){
         strcpy(lookup[k],"");
-        //lookup_2[k]=0;
     }
     //index for lookup arrays
     int index_of_lookup=0;
     char line[256 +1] = "";
-    while(fgets(line,sizeof(line),readfp)){
-        
+    while(fgets(line,sizeof(line),readfp) != NULL){
+        number_of_lines_errors++;
         // This part enables to the code to continue if the input is blank line
         int spaceFlag=1;
         for(int j=0;line[j]!='\n';j++){
             if(!isspace(line[j])){
                 spaceFlag=0;
+                break;
             }
         }
         if(spaceFlag==1){
@@ -705,7 +811,10 @@ int main()
             
             int check_number = checkFunc();
             if(check_number==1 || bigCheck==1){
-                printf("Error!\n");
+                printf("Error on line ");
+                printf("%d",number_of_lines_errors);
+                printf("!\n");
+                most_general_error_flag = 1;
                 continue;
             }
             char* toStoreRes = evaluatePostfix(fp);
@@ -762,7 +871,10 @@ int main()
                 
             }
             if(hasError == 1){
-                printf("Error!\n");
+                printf("Error on line ");
+                printf("%d",number_of_lines_errors);
+                printf("!\n");
+                most_general_error_flag = 1;
                 continue;
             }
             
@@ -772,8 +884,10 @@ int main()
             infixToPostfix(value);
             int check_number = checkFunc();
             if(check_number==1 || bigCheck==1){
-                printf("Error!\n");
-                
+                printf("Error on line ");
+                printf("%d",number_of_lines_errors);
+                printf("!\n");
+                most_general_error_flag = 1;
                 continue;
             }
             if(ifInside == -1){
@@ -799,17 +913,23 @@ int main()
                 strcpy(lookup[index_of_lookup],token_array);
                            
                 index_of_lookup++;
-            }/*else{
-                 
-                // just change the value of it
-                lookup_2[ifInside] = ans;
-            }*/
+            }
                                     
         }    
+        strcpy(line,"");
 
     }
     fprintf(fp,"ret i32 0}");
+
     fclose(fp);
+    fclose(readfp);
+
+    if (most_general_error_flag == 1) {
+        // delete file.ll
+        if (remove("file.ll") != 0) {
+            printf("Error deleting file\n");
+        }
+    }
 
     return 0;
 }
