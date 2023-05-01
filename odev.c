@@ -309,7 +309,7 @@ int checkFunc(){
         }
         // two operator number cannot be placed next to each other
         if(checkerToken[k].type == TOKEN_TYPE_OPERATOR){
-            if(checkerToken[k+1].type == TOKEN_TYPE_OPERATOR){
+            if(k==b-1 || checkerToken[k+1].type == TOKEN_TYPE_OPERATOR){
                 return 1;
             }
         }
@@ -410,7 +410,7 @@ int evaluatePostfix(FILE *fp)
         
     
     //char* res = (char*) calloc(257, sizeof(char));
-    char res[300];
+    char res[300]="";
     if(!(a==1 && arrToken[0].type == TOKEN_TYPE_NUMBER)){
         strcpy(res,"%");
     }else{
@@ -814,6 +814,7 @@ int main(int argc, char *argv[]) {
         printf("Usage: ./advcalc2ir file.adv\n");
         exit(1);
     }
+    
     char *input_filename = argv[1];
     int ext_index = 0;
     while (input_filename[ext_index] != '.' && input_filename[ext_index] != '\0') {
@@ -864,6 +865,9 @@ int main(int argc, char *argv[]) {
             strcpy(checkerToken[i].value,"");
 
         }
+        a=0;
+        b=0;
+        bigCheck=0;
         number_of_lines_errors++;
         withequal=0;
         // This part enables to the code to continue if the input is blank line
@@ -1004,7 +1008,7 @@ int main(int argc, char *argv[]) {
 
     if (most_general_error_flag == 1) {
         // delete file.ll
-        if (remove("file.ll") != 0) {
+        if (remove(output_filename) != 0) {
             printf("Error deleting file\n");
         }
     }
