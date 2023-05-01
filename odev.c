@@ -410,9 +410,9 @@ int evaluatePostfix(FILE *fp)
         
     
     //char* res = (char*) calloc(257, sizeof(char));
-    char res[300];
+    char res[300]="";
     if(!(a==1 && arrToken[0].type == TOKEN_TYPE_NUMBER)){
-        strcpy(res,"%%");
+        strcpy(res,"%");
     }else{
         strcpy(res,"");
     }
