@@ -806,8 +806,11 @@ int evaluatePostfix(FILE *fp)
     
     return 0;
 }
-int main(char *argv[])
-{
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: ./advcalc2ir file.adv\n");
+        exit(1);
+    }
     char *input_filename = argv[1];
     int ext_index = 0;
     while (input_filename[ext_index] != '.' && input_filename[ext_index] != '\0') {
