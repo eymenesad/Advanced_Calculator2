@@ -42,6 +42,8 @@ int bigCheck=0;
 int naming = 1;
 int number_of_lines_errors=0;
 int most_general_error_flag=0;
+
+int withequal = 0;
 // indicates the precedence of operators
 int precedence(char operator)
 {
@@ -89,11 +91,24 @@ int infixToPostfix(char* infix)
     int i=0, j=0;
     int len = strlen(infix);
     int top = -1;
+    //printf("%s",infix);
+    //printf(" ");
     //iterating through chars of infix expression
     while(i<len-1){
+        //printf("%d",i);
+        //printf(" ");
+
         //skipping blankspaces
+        /*if(i==57 && number_of_lines_errors == 15){
+            number_of_lines_errors++;
+            printf("%c",infix[i]);
+            printf("%c",infix[i+1]);
+            printf("%c",infix[i+2]);
+            printf("%c",infix[i+3]);
+            printf("%c",infix[i+4]);
+
+        }*/
         if (infix[i] == ' ' || infix[i] == '\t'){
-            
             
             i++;
             continue;
@@ -112,12 +127,12 @@ int infixToPostfix(char* infix)
             token.value[k] = '\0';
             arrToken[a++] = token;
             checkerToken[b++] = token;
-            
+            continue;
         }
 
         //checking if an incoming char is alphabetic and if so tokenizes it. Then, adding this token to arrToken and checkerToken.  
         else if (isalpha(infix[i])) {
-            
+
             int k = 0;
             while(isalpha(infix[i])){
                 token.value[k]=infix[i];
@@ -135,6 +150,7 @@ int infixToPostfix(char* infix)
                 arrToken[a++] = token;
             }
             checkerToken[b++] = token;
+            continue;
         }
 
         //if the incoming char is comma, initially tokenizes it, then looks at the last function and add the operator of it to the stackToken.  
@@ -185,6 +201,7 @@ int infixToPostfix(char* infix)
             }
             funcCounter--;
             i++;
+            continue;
         }
        
         // if the character is '(' push it in the stackToken
@@ -201,6 +218,7 @@ int infixToPostfix(char* infix)
                 strcpy(stackToken[top].value,"~");
                 funcCounter--;
             }
+            continue;
         }
        
         // if the character is ')'
@@ -220,6 +238,7 @@ int infixToPostfix(char* infix)
                 top--;
             }
             i++;
+            continue;
         }
        
         // checking if the char is operator
@@ -236,13 +255,20 @@ int infixToPostfix(char* infix)
                 arrToken[a++] = stackToken[top--];
             stackToken[++top] = token;
             i++;
+            continue;
         }
 
         else{
+           
             bigCheck=1;
             break;
         }
+        printf("%d",number_of_lines_errors);
+        printf(" ");
+        printf("%d",i);
+        printf("   ");
     }
+    
     // checking if the parantheses are balanced 
     while (top > -1) {
         if (stackToken[top].type == TOKEN_TYPE_PARENTHESES) {
@@ -250,6 +276,7 @@ int infixToPostfix(char* infix)
         }
         arrToken[a++] = stackToken[top--];
     }
+    
     return 0;
 }
 // big function for checking errors
@@ -367,20 +394,21 @@ int isInsideLookup(char arr[]){
     return -1;
 }
 // This function calculates the postfix notation coming from infixToPostfix function
-char* evaluatePostfix(FILE *fp)
+int evaluatePostfix(FILE *fp)
 {
     // index for tstack
     int toptstack=0;
     
     // initializing stack to evaluate postfix
     Token tstack[256];
-    for(int l=0;l<257;l++){
+    for(int l=0;l<256;l++){ 
         tstack[l].type = TOKEN_TYPE_NULLL;
         strcpy(tstack[l].value,"");
     }
-    char* res = malloc(sizeof(char) * 257);
+    //char* res = (char*) calloc(257, sizeof(char));
+    char res[300];
     if(!(a==1 && arrToken[0].type == TOKEN_TYPE_NUMBER)){
-        strcpy(res,"%");
+        strcpy(res,"%%");
     }else{
         strcpy(res,"");
     }
@@ -760,18 +788,43 @@ char* evaluatePostfix(FILE *fp)
                 
     }
     
-    
     strcat(res, tstack[toptstack-1].value);
-    return res;
+    if(withequal==0){
+        fprintf(fp,"call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 ");
+        naming++;
+        fprintf(fp, res);
+        fprintf(fp," )");
+        fprintf(fp,"\n");
+    }else{
+        fprintf(fp,"store i32 ");
+        fprintf(fp, res);
+        fprintf(fp,", ");
+        fprintf(fp,"i32* ");
+        fprintf(fp,"%%");
+    }
+    
+    
+    return 0;
 }
-int main()
+int main(char *argv[])
 {
-    FILE *readfp = fopen("file.adv", "r");
+    char *input_filename = argv[1];
+    int ext_index = 0;
+    while (input_filename[ext_index] != '.' && input_filename[ext_index] != '\0') {
+        ext_index++;
+    }
+    char output_filename[ext_index + 4]; // Add space for ".ll"
+    strncpy(output_filename, input_filename, ext_index);
+    output_filename[ext_index] = '\0'; // Add null terminator
+    strcat(output_filename, ".ll");
+
+
+    FILE *readfp = fopen(input_filename, "r");
     if (readfp == NULL) {
         printf("Error opening file\n");
         exit(1);
     }
-    FILE *fp = fopen("file.ll", "w");
+    FILE *fp = fopen(output_filename, "w");
     if (fp == NULL) {
         printf("Failed to open file\n");
         return 1;
@@ -789,8 +842,9 @@ int main()
     //index for lookup arrays
     int index_of_lookup=0;
     char line[256 +1] = "";
-    while(fgets(line,sizeof(line),readfp) != NULL){
+    while(fgets(line,sizeof(line),readfp)){
         number_of_lines_errors++;
+        withequal=0;
         // This part enables to the code to continue if the input is blank line
         int spaceFlag=1;
         for(int j=0;line[j]!='\n';j++){
@@ -806,6 +860,7 @@ int main()
         // if the line does not include '='
         // execute the infixToPostfix and evaluatePostfix functions respectively.
         if(strchr(line,'=') == NULL){
+            withequal=0;
 
             infixToPostfix(line);
             
@@ -817,18 +872,19 @@ int main()
                 most_general_error_flag = 1;
                 continue;
             }
-            char* toStoreRes = evaluatePostfix(fp);
-            fprintf(fp,"call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 ");
+            evaluatePostfix(fp);
+            /*fprintf(fp,"call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 ");
             naming++;
             fprintf(fp,"%s",toStoreRes);
             fprintf(fp," )");
             fprintf(fp,"\n");
+            */
         
             
         }else{
         // splitting the line by =
         
-        
+            withequal=1;
             char temp[257];
             strcpy(temp,line);
 
@@ -898,15 +954,16 @@ int main()
             }/*else{
 
             }*/
-            char* toStoreRes = evaluatePostfix(fp);
-            fprintf(fp,"store i32 ");
+            evaluatePostfix(fp);
+            /*fprintf(fp,"store i32 ");
             fprintf(fp,"%s",toStoreRes);
             fprintf(fp,", ");
             fprintf(fp,"i32* ");
             fprintf(fp,"%%");
             fprintf(fp,token_array);
+            fprintf(fp,"\n");*/
+            fprintf(fp,token_array);
             fprintf(fp,"\n");
-            free(toStoreRes);
             // if the variable is not in lookup array
             // assign the variable and its value to lookup arrays separately
             if(ifInside==-1){
