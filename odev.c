@@ -410,7 +410,7 @@ int evaluatePostfix(FILE *fp)
         
     
     //char* res = (char*) calloc(257, sizeof(char));
-    char res[300]="";
+    char res[300];
     if(!(a==1 && arrToken[0].type == TOKEN_TYPE_NUMBER)){
         strcpy(res,"%");
     }else{
@@ -423,11 +423,10 @@ int evaluatePostfix(FILE *fp)
         // evaluate the result with these values and operator
         // then, push this result back to the tstack
         if(arrToken[i].type == TOKEN_TYPE_OPERATOR){
-            char op_val[257];
+            char op_val[257]="";
             strcpy(op_val, arrToken[i].value);
             Token tok1 = tstack[--toptstack];
             
-            char outcome[257]="";
             if(strcmp(op_val,"~")==0){
                 // NOT
                 fprintf(fp,"%%");
