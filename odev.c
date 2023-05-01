@@ -25,10 +25,17 @@ typedef struct {
 Token checkerToken[257];
 
 // The postfix expression is kept in arrToken.
-Token arrToken[256+1];
+Token arrToken[257];
 
 // Lookup arrays are for memorization of variables. Lookup array records the input as string and lookup_2 records integer value of that string.
 char lookup[257][257];
+
+// stackToken includes operators, functions and parantheses  
+Token stackToken[257];
+// funcStack shows which function is the last one
+Token funcStack[257];
+
+Token tstack[257];
 
 // a is the index of arrToken
 int a=0;
@@ -73,18 +80,16 @@ int infixToPostfix(char* infix)
     a=0;
     bigCheck=0;
     //initializing arrToken and checkerToken
-    for(int i=0;i<257;i++){
+    /*for(int i=0;i<257;i++){
         arrToken[i].type = TOKEN_TYPE_NULLL;
         checkerToken[i].type = TOKEN_TYPE_NULLL;
 
         strcpy(arrToken[i].value,"");
         strcpy(checkerToken[i].value,"");
 
-    }
-    // stackToken includes operators, functions and parantheses  
-    Token stackToken[256+1];
-    // funcStack shows which function is the last one
-    Token funcStack[257];
+    }*/
+    
+    
     // index for funcStack
     int funcCounter=0;
 
@@ -400,11 +405,10 @@ int evaluatePostfix(FILE *fp)
     int toptstack=0;
     
     // initializing stack to evaluate postfix
-    Token tstack[256];
-    for(int l=0;l<256;l++){ 
-        tstack[l].type = TOKEN_TYPE_NULLL;
-        strcpy(tstack[l].value,"");
-    }
+    
+     
+        
+    
     //char* res = (char*) calloc(257, sizeof(char));
     char res[300];
     if(!(a==1 && arrToken[0].type == TOKEN_TYPE_NUMBER)){
@@ -846,6 +850,21 @@ int main(int argc, char *argv[]) {
     int index_of_lookup=0;
     char line[256 +1] = "";
     while(fgets(line,sizeof(line),readfp)){
+        //initializing arrToken and checkerToken
+        for(int i=0;i<257;i++){
+            arrToken[i].type = TOKEN_TYPE_NULLL;
+            checkerToken[i].type = TOKEN_TYPE_NULLL;
+            stackToken[i].type = TOKEN_TYPE_NULLL;
+            funcStack[i].type = TOKEN_TYPE_NULLL;
+            tstack[i].type = TOKEN_TYPE_NULLL;
+            strcpy(tstack[i].value,"");
+            strcpy(stackToken[i].value,"");
+            strcpy(funcStack[i].value,"");
+
+            strcpy(arrToken[i].value,"");
+            strcpy(checkerToken[i].value,"");
+
+        }
         number_of_lines_errors++;
         withequal=0;
         // This part enables to the code to continue if the input is blank line
