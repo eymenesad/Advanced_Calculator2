@@ -432,7 +432,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,",");
                     fprintf(fp,"%d",-1);
                     fprintf(fp,"\n");
@@ -446,12 +446,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"-")==0){
@@ -461,12 +461,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"*")==0){
@@ -476,12 +476,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"/")==0){
@@ -491,12 +491,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"%")==0){
@@ -506,12 +506,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"&")==0){
@@ -521,12 +521,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"|")==0){
@@ -536,12 +536,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
                 }else if(strcmp(op_val,"^")==0){
                     fprintf(fp,"%%");
@@ -550,12 +550,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,">>")==0){
@@ -565,12 +565,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
                 }else if(strcmp(op_val,"<<")==0){
                     fprintf(fp,"%%");
@@ -579,12 +579,12 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                 }else if(strcmp(op_val,"lr")==0){
@@ -606,7 +606,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming-1);
@@ -621,7 +621,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                     naming++;
@@ -643,7 +643,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,", ");
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming-1);
@@ -682,7 +682,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,",");
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming-1);
@@ -697,7 +697,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok1.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok1.value);
+                    fprintf(fp,"%s",tok1.value);
                     fprintf(fp,"\n");
 
                     naming++;
@@ -719,7 +719,7 @@ int evaluatePostfix(FILE *fp)
                     if(tok2.type == TOKEN_TYPE_VARIABLE){
                         fprintf(fp,"%%");
                     }
-                    fprintf(fp,tok2.value);
+                    fprintf(fp,"%s",tok2.value);
                     fprintf(fp,", ");
                     fprintf(fp,"%%");
                     fprintf(fp,"%d",naming-1);
@@ -775,7 +775,7 @@ int evaluatePostfix(FILE *fp)
             fprintf(fp,"%d",naming);
             fprintf(fp," = load i32, i32* ");
             fprintf(fp,"%%");
-            fprintf(fp,arrToken[i].value);
+            fprintf(fp,"%s",arrToken[i].value);
             fprintf(fp,"\n");
             
             tstack[toptstack].type = TOKEN_TYPE_VARIABLE;
@@ -792,12 +792,12 @@ int evaluatePostfix(FILE *fp)
     if(withequal==0){
         fprintf(fp,"call i32 (i8*, ...) @printf(i8* getelementptr ([4 x i8], [4 x i8]* @print.str, i32 0, i32 0), i32 ");
         naming++;
-        fprintf(fp, res);
+        fprintf(fp, "%s",res);
         fprintf(fp," )");
         fprintf(fp,"\n");
     }else{
         fprintf(fp,"store i32 ");
-        fprintf(fp, res);
+        fprintf(fp, "%s",res);
         fprintf(fp,", ");
         fprintf(fp,"i32* ");
         fprintf(fp,"%%");
@@ -948,7 +948,7 @@ int main(char *argv[])
             }
             if(ifInside == -1){
                 fprintf(fp,"%%");
-                fprintf(fp,token_array);
+                fprintf(fp,"%s",token_array);
                 fprintf(fp," = alloca i32");
                 fprintf(fp,"\n");
             }/*else{
@@ -962,7 +962,7 @@ int main(char *argv[])
             fprintf(fp,"%%");
             fprintf(fp,token_array);
             fprintf(fp,"\n");*/
-            fprintf(fp,token_array);
+            fprintf(fp,"%s",token_array);
             fprintf(fp,"\n");
             // if the variable is not in lookup array
             // assign the variable and its value to lookup arrays separately
